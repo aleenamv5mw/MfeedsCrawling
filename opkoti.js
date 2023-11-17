@@ -6,7 +6,7 @@ const mongo = require("mongodb");
 const Listing = require("./model/opkotiListing");
 const mongoose = require('mongoose');
 
-async function connectToMongoDb() //connection to mongo db
+async function connectToMongoDb() //connection to mongo databse
 {
   await mongoose.connect(
     "mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority",

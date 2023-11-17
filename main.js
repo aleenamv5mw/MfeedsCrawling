@@ -21,7 +21,7 @@ async function runAllCronJobs() {
      await file5();
     await file6();
     await file7();
-     await file8();
+    await file8();
       // Execute the cron job functions from other files
   
       console.log('All cron jobs executed successfully.');

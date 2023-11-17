@@ -16,7 +16,7 @@ async function connectToMongoDb()
 
 
 
-//Using API fetch the data are crawled
+//Using API fetch the data are crawled 
 async function scrapelisting(){
   const myPosts = await fetch("https://www.kiinteistomaailma.fi/api/km/KM?limit=30&maxArea=&maxYearBuilt=&minArea=&minYearBuilt=&sort=latestPublishTimestamp&sortOrder=desc&type=property");
   const response = await myPosts.json();

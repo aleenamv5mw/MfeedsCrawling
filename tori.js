@@ -218,7 +218,7 @@ async function scrapejobdescription(listing, page){
     console.log('Running Cron Job');
   });
   //cron.schedule("*/10 * * * * *", function() {
-   // main();
+   // main(); /
     //console.log('Running Cron Job');
 
 //});

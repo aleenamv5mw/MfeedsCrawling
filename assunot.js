@@ -124,7 +124,7 @@ async function scrapejobdescription(listing, page){
         
     
           else{
-           client.close();
+            client.close();
     
           }
         }

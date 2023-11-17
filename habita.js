@@ -15,7 +15,7 @@ async function connectToMongoDb()
   console.log("connected")
 }
 
-//API call to fetch the data
+//API call - fetch the data
 async function scrapelisting(){
   const myPosts = await fetch("https://www.habita.com/propertysearch/results/fi/1?sort=newest&type=ResidenceSale");
   const response = await myPosts.json();

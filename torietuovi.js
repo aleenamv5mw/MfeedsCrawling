@@ -146,7 +146,7 @@ async function scrapejobdescription(listing, page){
         listing[i].address=address;//(Osoite)
         listing[i].area=area;
         listing[i].description=description;//Isännöinti
-        listing[i].type=type;//Tyyppi
+        listing[i].type=type;//Tyyppi test
         listing[i].vendor=vendor;
         }  
          if(url1.match(/\/\d{8}\?/)){

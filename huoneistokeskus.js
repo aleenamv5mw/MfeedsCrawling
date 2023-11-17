@@ -157,7 +157,7 @@ await browser.close();
 
 return listing;
 }
-//schedules the cron job
+//scheduled the cron job
 cron.schedule('*/35 * * * * ', async function() {
 const listing = await main();
 
