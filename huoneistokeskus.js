@@ -1,22 +1,26 @@
+require('dotenv').config();
 const cron = require("node-cron");
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
 const cheerio = require("cheerio");
 const http = require('http');
 const mongo = require("mongodb");
 const Listing = require("./model/hListing");
 const mongoose = require('mongoose');
-const url1 = `mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority`;
+//bot protection
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 
+// Register the Stealth plugin
+puppeteer.use(StealthPlugin());
 
 async function connectToMongoDb()
 {
   await mongoose.connect(
-    "mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority",
+   process.env.MONGO_URI,
     { useNewUrlParser: true }
   );
   console.log("connected")
 }
-
 
 async function scrapelisting(page) {
 await page.goto('https://www.huoneistokeskus.fi/myytavat-asunnot?page=%22.$page.%22&MinUnencumberedSalesPrice=&MaxUnencumberedSalesPrice=&Id=&MinLivingArea=&MaxLivingArea=&MinPlotArea=&MaxPlotArea=&MinConstructionYear=&MaxConstructionYear=&SaleStartedDaysAgo=&NewProperty=include&service=Residences&orderby=SaleStarted+desc&top=12&op=Hae&trigger_field=&form_build_id=form-kkDNbXywW0nXW6E94lxLs1h9y60W94alIReIWA_htdQ&form_id=realia_masteri_search_form_builder', {timeout:0});
@@ -37,9 +41,7 @@ const listing = $("#content > div > div > div.panel-panel.panel-col-middle-wide.
  
 })
 .get();
-
-
-
+console.log("scrape listing check");
 return listing;
 }
 //var ven=new Array();
@@ -49,11 +51,9 @@ for(var i=0; i< 10;i++)
   
   const { MongoClient } = require('mongodb');
 
+  const client = new MongoClient( process.env.MONGO_URI,);
   
-  const uri =`mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority`;
-  
-  
-  const client = new MongoClient(uri);
+
 
 
       // Connect to the MongoDB cluster
@@ -137,12 +137,10 @@ return new Promise(resolve => setTimeout(resolve, milliseconds));
 
 
 
-
-
 async function main()
 {
-  await connectToMongoDb();
-const browser = await puppeteer.launch({headless: false});
+await connectToMongoDb();
+const browser = await puppeteer.launch({headless: true});
 const page = await browser.newPage();
 const listing = await scrapelisting(page);
 const datadescription = await scrapejobdescription(listing, page);
@@ -158,7 +156,7 @@ await browser.close();
 return listing;
 }
 //scheduled the cron job
-cron.schedule('*/35 * * * * ', async function() {
+cron.schedule('* * * * * * ', async function() {
 const listing = await main();
 
 if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {

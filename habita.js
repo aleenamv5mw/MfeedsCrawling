@@ -1,15 +1,22 @@
+require('dotenv').config();
 const cron = require("node-cron");
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
 const cheerio = require("cheerio");
 const mongo = require("mongodb");
 const Listing = require("./model/habitalisting");
 const mongoose = require('mongoose');
-const url2 = `mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority`;
+
+//bot protection
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+// Register the Stealth plugin
+puppeteer.use(StealthPlugin());
 
 async function connectToMongoDb()
 {
   await mongoose.connect(
-    "mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority",
+    process.env.MONGO_URI,
     { useNewUrlParser: true }
   );
   console.log("connected")
@@ -75,9 +82,8 @@ console.log(setting);
       const { MongoClient } = require('mongodb');
 
     
-        const uri =`mongodb+srv://user:johnmayer@mfeeds.giicowq.mongodb.net/mfeeds_db?retryWrites=true&w=majority`;
+      const client = new MongoClient( process.env.MONGO_URI,);
         
-        const client = new MongoClient(uri);
     
       
             // Connect to the MongoDB cluster
@@ -183,7 +189,7 @@ async function sleep(milliseconds){
 async function main()
 {
     await connectToMongoDb();
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless: true});
     const page = await browser.newPage();
     const listing = await scrapelisting();
     
@@ -200,43 +206,43 @@ async function main()
     return listing;
   }
   //schedules the cron job
-  cron.schedule('*/55 * * * *', async function() {
+  cron.schedule('* /55 * * * *', async function() {
     const listing = await main();
   
-    if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {
-      console.log('Sending email...');
+  //   if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {
+  //     console.log('Sending email...');
   
-      const transporter = nodemailer.createTransport({
+  //     const transporter = nodemailer.createTransport({
         
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'revtemp123@gmail.com',
-          pass: 'vsdfabpoyvkwvqln'
-        }
-      });
+  //       host: 'smtp.gmail.com',
+  //       port: 587,
+  //       secure: false,
+  //       auth: {
+  //         user: 'revtemp123@gmail.com',
+  //         pass: 'vsdfabpoyvkwvqln'
+  //       }
+  //     });
   
-      const message = {
-        from: 'revtemp123@gmail.com',
-        to: ['revathi.r@meltwater.com','revathir1610@gmail.com'],
-        subject: 'Test Email',
-        text: 'This is a test email message'
-      };
+  //     const message = {
+  //       from: 'revtemp123@gmail.com',
+  //       to: ['revathi.r@meltwater.com','revathir1610@gmail.com'],
+  //       subject: 'Test Email',
+  //       text: 'This is a test email message'
+  //     };
       
-      transporter.sendMail(message, (err, info) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(info);
-        }
-      });
-    } else {
-      console.log('Listing is not empty, not sending email.');
-    }
+  //     transporter.sendMail(message, (err, info) => {
+  //       if (err) {
+  //         console.error(err);
+  //       } else {
+  //         console.log(info);
+  //       }
+  //     });
+  //   } else {
+  //     console.log('Listing is not empty, not sending email.');
+  //   }
   
-    console.log('Running Cron Job');
-  });
+  //   console.log('Running Cron Job');
+ });
   //cron.schedule("*/10 * * * * *", function() {
    // main();
     //console.log('Running Cron Job');

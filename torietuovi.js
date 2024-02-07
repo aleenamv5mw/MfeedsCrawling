@@ -14,7 +14,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
 
-async function connectToMongoDb() //conection to mongdb
+async function connectToMongoDb() //connection to mongdb
 {
   await mongoose.connect(
     process.env.MONGO_URI,
@@ -51,7 +51,7 @@ async function scrapejobdescription(listing, page){
     {
       const { MongoClient } = require('mongodb');
       
-      const client = new MongoClient(uri);
+      const client = new MongoClient( process.env.MONGO_URI,);
     
       
       // Connect to the MongoDB cluster
@@ -253,64 +253,64 @@ return listing;
 //cron.schedule('*/10 * * * *', async function() {
   //test
   //cron.schedule('*/40 * * * *', async function() {
-let cronJobCounter = 0;
-const dataFreq = [];
-cron.schedule('* * * * *', async function() { // Run every minute for testing
-  cronJobCounter++;
-  console.log(`Cron Job run #${cronJobCounter}`);
-  setTimeout(() => {
-    console.log(`Expected number of runs in 12 hours: ${cronJobCounter * 24}`);
-    process.exit(0);
-  }, 30 * 60 * 1000); // 30 minutes x 60 seconds x 1000 milliseconds
+// let cronJobCounter = 0;
+// const dataFreq = [];
+// cron.schedule('* * * * *', async function() { // Run every minute for testing
+//   cronJobCounter++;
+//   console.log(`Cron Job run #${cronJobCounter}`);
+//   setTimeout(() => {
+//     console.log(`Expected number of runs in 12 hours: ${cronJobCounter * 24}`);
+//     process.exit(0);
+//   }, 30 * 60 * 1000); // 30 minutes x 60 seconds x 1000 milliseconds
 
-const listing = await main();
+// const listing = await main();
 
-// Log data, add frequency data to the dataFreq array
-dataFreq.push({
-  runNumber: cronJobCounter,
-  dataCount: listing.length,
-});
-//print
-  console.log("Data Frequency in Each Cron Job Run:");
-  dataFreq.forEach(({ runNumber, dataCount }) => { 
-    console.log(`Run #${runNumber}: Data Count - ${dataCount}`);
-  });
+// // Log data, add frequency data to the dataFreq array
+// dataFreq.push({
+//   runNumber: cronJobCounter,
+//   dataCount: listing.length,
+// });
+// //print
+//   console.log("Data Frequency in Each Cron Job Run:");
+//   dataFreq.forEach(({ runNumber, dataCount }) => { 
+//     console.log(`Run #${runNumber}: Data Count - ${dataCount}`);
+//   });
 
 
-if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {
-  console.log('Sending email...');
+// if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {
+//   console.log('Sending email...');
 
-  const transporter = nodemailer.createTransport({
+//   const transporter = nodemailer.createTransport({
     
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'revtemp123@gmail.com',
-      pass: 'vsdfabpoyvkwvqln'
-    }
-  });
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     secure: false,
+//     auth: {
+//       user: 'revtemp123@gmail.com',
+//       pass: 'vsdfabpoyvkwvqln'
+//     }
+//   });
 
-  const message = {
-    from: 'revtemp123@gmail.com',
-    to: ['revathi.r@meltwater.com','revathir1610@gmail.com'],
-    subject: 'Test Email',
-    text: 'This is a test email message'
-  };
+//   const message = {
+//     from: 'revtemp123@gmail.com',
+//     to: ['revathi.r@meltwater.com','revathir1610@gmail.com'],
+//     subject: 'Test Email',
+//     text: 'This is a test email message'
+//   };
   
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(info);
-    }
-  });
-} else {
-  console.log('Listing is not empty, not sending email.');
-}
+//   transporter.sendMail(message, (err, info) => {
+//     if (err) {
+//       console.error(err);
+//     } else {
+//       console.log(info);
+//     }
+//   });
+// } else {
+//   console.log('Listing is not empty, not sending email.');
+// }
 
-console.log('Running Cron Job');
-});
+// console.log('Running Cron Job');
+// });
 cron.schedule("*/20 * * * * ", function() {
    main();
     console.log('Running Cron Job');
