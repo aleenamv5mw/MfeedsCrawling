@@ -206,7 +206,7 @@ async function main()
     return listing;
   }
   //schedules the cron job
-  cron.schedule('* /55 * * * *', async function() {
+  cron.schedule('*/55 * * * *', async function() {
     const listing = await main();
   
   //   if (!listing || listing.length === 0 || listing.some(item => !item.title || !item.url))  {
